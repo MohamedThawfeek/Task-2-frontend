@@ -6,7 +6,7 @@ import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 
 
-const Card = ({ title, quantity, price, desc, setProductPopup, product_id, setEdit, setProduct_id, setDeletePopup, company_id, setCompany_id }) => {
+const Card = ({ title, quantity, price, desc, setProductPopup, product_id, setEdit, image, setProduct_id, setDeletePopup, company_id, setCompany_id }) => {
   const [icons, seticons] = useState(false);
   return (
     <div
@@ -16,7 +16,7 @@ const Card = ({ title, quantity, price, desc, setProductPopup, product_id, setEd
       className=" relative w-[250px] h-[300px] rounded-lg overflow-hidden"
     >
       <img
-        src="https://cdn.pixabay.com/photo/2016/05/05/02/37/sunset-1373171_1280.jpg"
+        src={image}
         className=" w-full h-[150px] object-fill"
         alt=""
       />

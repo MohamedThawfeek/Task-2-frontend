@@ -87,6 +87,7 @@ const Product = () => {
                     setDeletePopup={setDeletePopup}
                     company_id={i.company_id}
                     setCompany_id={setCompany_id}
+                    image={i.image}
                   />
                 );
               })}
