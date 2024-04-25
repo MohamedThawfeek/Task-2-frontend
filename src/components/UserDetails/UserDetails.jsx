@@ -75,10 +75,10 @@ const UserDetailsPage = () => {
 
   useEffect(() => {
     if (userexp) {
-      setDob(userexp.dob);
-      setGender({ label: userexp.gender, value: userexp.gender });
-      setQlf(userexp.qualification);
-      setCmpy(userexp.company_details);
+      setDob(userexp?.dob);
+      setGender({ label: userexp?.gender, value: userexp?.gender });
+      setQlf(userexp?.qualification);
+      setCmpy(userexp?.company_details);
     }
   }, [userexp]);
 
