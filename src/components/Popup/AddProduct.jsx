@@ -33,7 +33,6 @@ const AddProduct = ({ close, id, product_id, edit, datas }) => {
   useEffect(() => {
     if (edit && product_id) {
       const filter = datas.filter((i) => i.product_id === product_id)[0];
-      console.log("ff", filter);
       reset({
         Name: filter.name,
         Category: filter.category,
@@ -46,8 +45,6 @@ const AddProduct = ({ close, id, product_id, edit, datas }) => {
   }, [edit, product_id]);
 
   const onSubmit = async (data) => {
-    const filter = datas.find((i) => i.product_id === product_id);
-
     setLoader(true);
     const reqData = {
       name: data.Name,
@@ -61,11 +58,12 @@ const AddProduct = ({ close, id, product_id, edit, datas }) => {
     // Function to fetch company products and dispatch
     const fetchCompanyProducts = async () => {
       const response = await CompanyListofProduct({
-        company_id: filter.company_id,
+        company_id: id,
       });
       if (response.success) {
+        setLoader(false);
         dispatch(addProduct(response.data));
-        close();
+        close(false);
       }
     };
 
@@ -85,7 +83,7 @@ const AddProduct = ({ close, id, product_id, edit, datas }) => {
   };
 
   return (
-    <div className=" absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[#1111118f]">
+    <div className=" absolute top-0 left-0 w-full z-40 h-[110vh] flex items-center justify-center bg-[#1111118f]">
       <div className=" relative w-[400px] py-4 rounded-lg bg-white p-3">
         <div
           onClick={() => close(false)}
