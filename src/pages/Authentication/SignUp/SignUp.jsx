@@ -1,0 +1,161 @@
+import React, { useState } from "react";
+
+//Third party libraries
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signUpSchema } from "../../../utils/Validation";
+import Input from "../../../components/Input/Input";
+import { Link, useNavigate } from "react-router-dom";
+import MobileInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import toast, { Toaster } from "react-hot-toast";
+import { SignUpAPI } from "../../../components/GlobalApi/Index";
+
+const SignUp = () => {
+  const navigate = useNavigate();
+  const [number, setNumber] = useState(null);
+  const [err, setErr] = useState(false);
+  const [loader, setLoader] = useState(false);
+
+  //Form validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signUpSchema),
+  });
+
+  const onSubmit = async (data) => {
+    if (!number) {
+      return setErr(true);
+    }
+
+    setLoader(true);
+    const reqdata = {
+      firstName: data.FirstName,
+      lastName: data.LastName,
+      email: data.Email,
+      phoneNumber: number,
+      password: data.Password,
+    };
+    const response = await SignUpAPI(reqdata);
+
+    if (response.success) {
+      setLoader(false);
+      return navigate("/login");
+    } else {
+      setLoader(false);
+      toast.error(response.message);
+    }
+  };
+
+  return (
+    <div className=" w-full h-[100vh] flex items-center justify-center">
+      <div className=" relative bg-gray-100 shadow-lg shadow-black lg:w-[30%] w-[80%] px-4 py-3 rounded-lg">
+        <form onSubmit={handleSubmit(onSubmit)} action="">
+          <Input
+            name="FirstName"
+            type="text"
+            placeholder="Enter first name"
+            register={register}
+            error={errors?.FirstName?.message}
+          />
+
+          <Input
+            name="LastName"
+            type="text"
+            placeholder="Enter last name"
+            register={register}
+            error={errors?.LastName?.message}
+          />
+
+          <Input
+            name="Email"
+            type="email"
+            placeholder="Enter email address"
+            register={register}
+            error={errors?.Email?.message}
+          />
+
+          <div className=" my-2">
+            <label className=" text-[12px] font-semibold">Phone Number</label>
+            <MobileInput
+              placeholder="Phone number"
+              className=" customInputSize py-1 block w-full bg-white  text-base text-black border border-[#D4D4D8] rounded-lg focus-within:border-[#4F46E5]"
+              name="phone"
+              enableSearch={true}
+              country={"in"}
+              defaultCountry={"in"}
+              value={number}
+              onChange={setNumber}
+            />
+
+            {err && !number && (
+              <p className=" text-[12px] text-red-500">
+                * Phone number is required
+              </p>
+            )}
+          </div>
+
+          {/* <Input
+            name="PhoneNumber"
+            type="number"
+            placeholder="Enter phone number"
+            register={register}
+            error={errors?.PhoneNumber?.message}
+          /> */}
+
+          <Input
+            name="Password"
+            type="text"
+            placeholder="Enter your password"
+            register={register}
+            error={errors?.Password?.message}
+          />
+
+          <button
+            type="submit"
+            className="flex items-center justify-center w-full px-8 h-[30px] max-h-[30px] mt-5 text-[14px] font-medium text-white transition-all duration-200 bg-[#4F46E5] border border-transparent  rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray  hover:bg-grayDark"
+          >
+            {loader ? (
+              <div role="status">
+                <svg
+                  aria-hidden="true"
+                  class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"
+                  />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            ) : (
+              "Sign Up"
+            )}
+          </button>
+        </form>
+        <p className="text-[#18181B] text-[12px] text-center pt-6">
+          Already have an account?
+          <Link
+            to="/login"
+            className="font-medium text-[#4F46E5] rounded font-pj text-[13px] hover:underline focus:outline-none focus:ring-1 focus:ring-gray-900 focus:ring-offset-2 ml-2"
+          >
+            Log In
+          </Link>
+        </p>
+      </div>
+      <Toaster position="top-right" reverseOrder={false} />
+    </div>
+  );
+};
+
+export default SignUp;
