@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { addCompanyschema } from "../../utils/Validation";
 import Input from "../../components/Input/Input";
 import { IoMdClose } from "react-icons/io";
-import { CreateCompany, EditCompany, ListofCompany } from "../GlobalApi/Index";
+import { CreateCompany, EditCompany, EditSingleCompany, ListofCompany } from "../GlobalApi/Index";
 import { addCompany } from "../../Redux/slices/companyList";
 import { useDispatch } from "react-redux";
 
@@ -27,12 +27,13 @@ const AddCompany = ({ close, id, edit, datas }) => {
 
   useEffect(() => {
     if (edit && id) {
-      const filter = datas.filter((d) => d.id === id)[0];
+      const filter = datas.filter((d) => d.company_id === id)[0];
+      console.log('ddd', filter)
       reset({
-        CompanyName: filter.Name,
-        CompanyAddress: filter.Address,
-        CompanyPhoneNumber: filter.PhoneNumber,
-        CompanyGst: filter.Gst,
+        CompanyName: filter.name,
+        CompanyAddress: filter.address,
+        CompanyPhoneNumber: filter.phonenumber,
+        CompanyGst: filter.gstnumber,
       });
     }
   }, [id, edit]);
@@ -51,7 +52,7 @@ const AddCompany = ({ close, id, edit, datas }) => {
       response = await CreateCompany(reqData, userToken);
     } else {
       reqData.company_id = id;
-      response = await EditCompany(reqData, userToken);
+      response = await EditSingleCompany(reqData, userToken);
     }
 
     if (response.success) {

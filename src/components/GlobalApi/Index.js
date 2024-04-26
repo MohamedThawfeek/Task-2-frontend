@@ -66,6 +66,16 @@ export const EditCompany = async (reqdata, token) => {
   return data;
 };
 
+
+
+export const EditSingleCompany = async (reqdata, token) => {
+  const { data } = await axios.post("/edit-single-company", reqdata, {
+    headers: { Authorization: token },
+  });
+  return data;
+};
+
+
 export const EditEmployee = async (reqdata) => {
   const { data } = await axios.post("/update-employee", reqdata);
   return data;

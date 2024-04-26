@@ -28,6 +28,7 @@ const Dashboard = () => {
     const API = async () => {
       if (userToken) {
         const response = await ListofCompany(userToken);
+        console.log('ss', response)
         if (response.success) {
           return dispatch(addCompany(response.data));
         }
@@ -50,10 +51,10 @@ const Dashboard = () => {
         <div>
           <p
             className="text-truncate mt-1"
-            data-tip={`${row?.Name}`}
+            data-tip={`${row?.name}`}
             data-for="test"
           >
-            {row?.Name}
+            {row?.name}
           </p>
           {/* <ReactTooltip id="test" effect="solid" place="bottom" /> */}
         </div>
@@ -68,10 +69,10 @@ const Dashboard = () => {
         <div>
           <p
             className="text-truncate mt-1"
-            data-tip={`${row?.Address}`}
+            data-tip={`${row?.address}`}
             data-for="test"
           >
-            {row?.Address}
+            {row?.address}
           </p>
           {/* <ReactTooltip id="test" effect="solid" place="bottom" /> */}
         </div>
@@ -85,10 +86,10 @@ const Dashboard = () => {
         <div>
           <p
             className="text-truncate mt-1"
-            data-tip={`${row?.PhoneNumber}`}
+            data-tip={`${row?.phonenumber}`}
             data-for="test"
           >
-            {row?.PhoneNumber}
+            {row?.phonenumber}
           </p>
           {/* <ReactTooltip id="test" effect="solid" place="bottom" /> */}
         </div>
@@ -99,7 +100,7 @@ const Dashboard = () => {
     },
     {
       name: "GST Number",
-      selector: (row) => row?.Gst,
+      selector: (row) => row?.gstnumber,
       sortable: true,
       center: true,
       width: "200px !important",
@@ -112,7 +113,7 @@ const Dashboard = () => {
           onClick={() => {
             setCompany(true);
             setEdit(true);
-            setId(`${row.id}`);
+            setId(`${row.company_id}`);
           }}
         >
           <p className=" text-[#4F46E5]">Edit</p>
@@ -127,7 +128,7 @@ const Dashboard = () => {
       selector: (row) => (
         <div
           className=" cursor-pointer"
-          onClick={() => navigate(`/companydetails?id=${row.id}`)}
+          onClick={() => navigate(`/companydetails?id=${row.company_id}`)}
         >
           <p className=" text-[#4F46E5]">View</p>
         </div>
@@ -144,7 +145,7 @@ const Dashboard = () => {
           className=" cursor-pointer"
           onClick={() => {
             setDeletePopup(true);
-            setId(`${row.id}`);
+            setId(`${row.company_id}`);
           }}
         >
           <p className=" text-red-500">Delete</p>

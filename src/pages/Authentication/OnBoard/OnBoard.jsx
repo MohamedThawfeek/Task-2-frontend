@@ -79,7 +79,7 @@ const OnBoard = () => {
   const addCompany = () => {
     setCmpy((prevQualifications) => [
       ...prevQualifications,
-      { id: uuid(), Name: "", Address: "", PhoneNumber: "", Gst: "" },
+      { id: uuid(), Name: "", Address: "", PhoneNumber: "", GstNumber: "" },
     ]);
   };
 
