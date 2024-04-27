@@ -28,7 +28,6 @@ const Dashboard = () => {
     const API = async () => {
       if (userToken) {
         const response = await ListofCompany(userToken);
-        console.log('ss', response)
         if (response.success) {
           return dispatch(addCompany(response.data));
         }

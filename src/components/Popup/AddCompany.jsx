@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { addCompanyschema } from "../../utils/Validation";
 import Input from "../../components/Input/Input";
 import { IoMdClose } from "react-icons/io";
-import { CreateCompany, EditCompany, EditSingleCompany, ListofCompany } from "../GlobalApi/Index";
+import { CreateCompany, EditSingleCompany, ListofCompany } from "../GlobalApi/Index";
 import { addCompany } from "../../Redux/slices/companyList";
 import { useDispatch } from "react-redux";
 
@@ -28,7 +28,6 @@ const AddCompany = ({ close, id, edit, datas }) => {
   useEffect(() => {
     if (edit && id) {
       const filter = datas.filter((d) => d.company_id === id)[0];
-      console.log('ddd', filter)
       reset({
         CompanyName: filter.name,
         CompanyAddress: filter.address,
@@ -36,7 +35,7 @@ const AddCompany = ({ close, id, edit, datas }) => {
         CompanyGst: filter.gstnumber,
       });
     }
-  }, [id, edit]);
+  }, [id, edit, datas]);
 
   const onSubmit = async (data) => {
     const reqData = {

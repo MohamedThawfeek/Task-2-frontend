@@ -9,6 +9,7 @@ import "react-phone-input-2/lib/style.css";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  EditCompany,
   UserDetails,
   getFullUserDetails,
   updateFullUserDetails,
@@ -24,11 +25,15 @@ import { FaPlus } from "react-icons/fa6";
 import CompanyDetails from "../CompanyDetails/CompanyDetails";
 import { v4 as uuid } from "uuid";
 import { addUserDetails } from "../../Redux/slices/userDetails";
+import { addCompany } from "../../Redux/slices/companyList";
+import { ListofCompany } from "../GlobalApi/Index";
 
 const UserDetailsPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { userexp } = useSelector((state) => state.userDetails);
+  const { companylist } = useSelector((state) => state.companylist);
 
+  console.log("companylist", companylist);
   const userToken = localStorage.getItem("Token");
   const dispatch = useDispatch();
   //Form validation
@@ -67,7 +72,11 @@ const UserDetailsPage = () => {
     const API = async () => {
       const response = await getFullUserDetails(userToken);
       if (response.success) {
-        return dispatch(addUserDetails(response.data));
+        const data = await ListofCompany(userToken);
+        if (data.success) {
+          dispatch(addCompany(data.data));
+          return dispatch(addUserDetails(response.data));
+        }
       }
     };
     API();
@@ -78,9 +87,9 @@ const UserDetailsPage = () => {
       setDob(userexp?.dob);
       setGender({ label: userexp?.gender, value: userexp?.gender });
       setQlf(userexp?.qualification);
-      setCmpy(userexp?.company_details);
+      setCmpy(companylist);
     }
-  }, [userexp]);
+  }, [userexp, companylist]);
 
   const onSubmit = async (data) => {
     if (!number) {
@@ -115,7 +124,7 @@ const UserDetailsPage = () => {
   const addQualification = () => {
     setQlf((prevQualifications) => [
       ...prevQualifications,
-      { qlalification: "" },
+      { qualification: "" },
     ]);
   };
 
@@ -139,10 +148,16 @@ const UserDetailsPage = () => {
   };
 
   //Company Functions
-  const addCompany = () => {
+  const addCompanys = () => {
     setCmpy((prevQualifications) => [
       ...prevQualifications,
-      { id: uuid(), Name: "", Address: "", PhoneNumber: "", Gst: "" },
+      {
+        company_id: uuid(),
+        name: "",
+        address: "",
+        phonenumber: "",
+        gstnumber: "",
+      },
     ]);
   };
 
@@ -173,15 +188,28 @@ const UserDetailsPage = () => {
       dob: dob,
       gender: gender.value,
       qualification: qlf,
-      company: cmpy,
     };
     setLoader(true);
 
     const response = await updateFullUserDetails(reqdata, userToken);
 
     if (response.success) {
-      setLoader(false);
-      return toast.success(response.message);
+      const reqdata1 = {
+        company: cmpy,
+      };
+      const data = await EditCompany(reqdata1, userToken);
+      if (data.success) {
+        const data1 = await getFullUserDetails(userToken);
+        if (data1.success) {
+          const data2 = await ListofCompany(userToken);
+          if (data2.success) {
+            dispatch(addCompany(data2.data));
+            dispatch(addUserDetails(data1.data));
+            setLoader(false);
+            return toast.success(response.message);
+          }
+        }
+      }
     } else {
       setLoader(false);
       return toast.error(response.message);
@@ -355,7 +383,7 @@ const UserDetailsPage = () => {
                 );
               })}
               <p
-                onClick={addCompany}
+                onClick={addCompanys}
                 className=" text-[#4F46E5] w-full text-end cursor-pointer text-[12px] flex items-center justify-end gap-1 mt-2 mb-1"
               >
                 ADD Company Details
